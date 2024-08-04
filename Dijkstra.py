@@ -1,48 +1,62 @@
-from heapq import heappush, heappop
-INF = 10 ** 9 + 7
+import heapq
 
-def Dijkstra(s, f, dist):
-    pq = [(0, s)]
+INF = int(1e9)
+
+def Dijkstra(s):
+    pq = []
+    heapq.heapify(pq)
+    heapq.heappush(pq, (0, s))
     dist[s] = 0
-    
-    while pq:
-        w, u = heappop(pq)
-        if u == f:
-            break
-        
-        if w > dist[u]:
-            continue
-        
-        for weight, v in graph[u]:
-            if w + weight < dist[v]:
-                dist[v] = w + weight
-                heappush(pq, (dist[v], v))
+    while len(pq):
+        top = pq[0]
+        u = top[1]
+        w = top[0]
+        heapq.heappop(pq)
+        for neighbor in graph[u]:
+            if w + neighbor[0] < dist[neighbor[1]]:
+                dist[neighbor[1]] = w + neighbor[0]
+                heapq.heappush(pq, (dist[neighbor[1]], neighbor[1]))
+                path[neighbor[1]] = u
 
-N = int(input())
+def printPath(s, t):
+    if s == t:
+        print(t, end=" ")
+    else:
+        if path[t] == -1:
+            print("No path")
+        else:
+            printPath(s, path[t])
+            print(t, end=" ")
 
-for t in range(1, N + 1):
-    n, m, S, T = map(int, input().split())
+if __name__ == "__main__":
+    n = int(input())
+
+    s, t = 0, 4
+
     graph = [[] for _ in range(n)]
-    
-    for _ in range(m):
-        u, v, w = map(int, input().split())
-        graph[u].append((w, v))
-        graph[v].append((w, u))
-    
-    dist = [INF] * n
-    Dijkstra(S, T, dist)
-    
-    print('Case #{}: '.format(t), end='')
-    print(dist[T] if dist[T] != INF else "unreachable")
+    dist = [INF for _ in range(n)]
+    path = [-1 for _ in range(n)]
+
+    for i in range(n):
+        d = list(map(int, input().split()))
+        for j in range(n):
+            if d[j] > 0:
+                graph[i].append((d[j], j))
+
+    # print(graph)
+    Dijkstra(s)
+    # print(dist)
+    ans = dist[t]
+    print("Path: ", end="")
+    printPath(s,t)
+    print("\nCost:",ans)
 
 '''
-3
-2 1 0 1
-0 1 100
-3 3 2 0
-0 1 100
-0 2 200
-1 2 50
-2 0 0 1
-
+6
+0 1 0 0 0 0
+0 0 5 2 0 7
+0 0 0 0 0 1
+2 0 1 0 4 0
+0 0 0 3 0 0
+0 0 0 0 1 0
 '''
