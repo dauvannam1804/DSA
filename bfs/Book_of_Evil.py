@@ -30,6 +30,7 @@ def solve():
 
     # Step 1: BFS from any affected node to find farthest affected
     dist1 = bfs(affected[0], graph, n)
+    print(dist1)
     farthest = affected[0]
     max_dist = -1
     for p in affected:
@@ -39,6 +40,7 @@ def solve():
 
     # Step 2: BFS from farthest affected node to find other end of "diameter"
     dist_u = bfs(farthest, graph, n)
+    print(dist_u)
     farthest2 = affected[0]
     max_dist = -1
     for p in affected:
@@ -48,6 +50,7 @@ def solve():
 
     # Step 3: BFS from second farthest affected node
     dist_v = bfs(farthest2, graph, n)
+    print(dist_v)
 
     # Step 4: check for each node
     result = 0
